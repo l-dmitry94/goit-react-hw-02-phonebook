@@ -1,13 +1,30 @@
-const ContactList = ({ contacts }) => {
+import PropTypes from 'prop-types';
+import { PhonebookItem, PhonebookItemButton, PhonebookList } from './ContactList.styled';
+
+const ContactList = ({ contacts, onDeleteContact }) => {
     return (
-        <ul className="phonebook__list">
+        <PhonebookList>
             {contacts.map(({ id, name, number }) => (
-                <li key={id} className="phonebook__list-item">
-                    {name}: {number}
-                </li>
+                <PhonebookItem key={id}>
+                    {`${name}: ${number}`}
+                    <PhonebookItemButton type="button" onClick={() => onDeleteContact(id)}>
+                        Delete
+                    </PhonebookItemButton>
+                </PhonebookItem>
             ))}
-        </ul>
+        </PhonebookList>
     );
+};
+
+ContactList.propTypes = {
+    contacts: PropTypes.arrayOf(
+        PropTypes.shape({
+            id: PropTypes.string.isRequired,
+            name: PropTypes.string.isRequired,
+            number: PropTypes.string.isRequired,
+        })
+    ),
+    onDeleteContact: PropTypes.func.isRequired,
 };
 
 export default ContactList;

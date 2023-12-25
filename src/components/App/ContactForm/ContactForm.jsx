@@ -1,5 +1,7 @@
+import PropTypes from 'prop-types';
 import { Component } from 'react';
 import { nanoid } from 'nanoid';
+import { Form, FormButton, FormInput, FormLabel } from './ContactForm.styled';
 
 class ContactForm extends Component {
     state = {
@@ -26,7 +28,7 @@ class ContactForm extends Component {
     reset = () => {
         this.setState({
             name: '',
-            number: ''
+            number: '',
         });
     };
 
@@ -36,11 +38,10 @@ class ContactForm extends Component {
         const numberId = nanoid();
 
         return (
-            <form className="phonebook__form" onSubmit={this.handleSubmit}>
-                <label htmlFor={nameId}>
-                    Name
-                    <input
-                        className="phonebook__form-input"
+            <Form onSubmit={this.handleSubmit}>
+                <FormLabel htmlFor={nameId}>
+                    Name:
+                    <FormInput
                         type="text"
                         name="name"
                         id={nameId}
@@ -48,11 +49,10 @@ class ContactForm extends Component {
                         onChange={this.handleChange}
                         required
                     />
-                </label>
-                <label htmlFor={numberId}>
-                    Number
-                    <input
-                        className="phonebook__form-input"
+                </FormLabel>
+                <FormLabel htmlFor={numberId}>
+                    Number:
+                    <FormInput
                         type="tel"
                         name="number"
                         id={numberId}
@@ -60,14 +60,23 @@ class ContactForm extends Component {
                         onChange={this.handleChange}
                         required
                     />
-                </label>
+                </FormLabel>
 
-                <button className="phonebook__form-submit" type="submit">
+                <FormButton type="submit">
                     Add contact
-                </button>
-            </form>
+                </FormButton>
+            </Form>
         );
     }
 }
+
+ContactForm.propTypes = {
+    name: PropTypes.string,
+    number: PropTypes.string,
+    nameId: PropTypes.string,
+    numberId: PropTypes.string,
+    onSubmit: PropTypes.func.isRequired,
+    onChange: PropTypes.func,
+};
 
 export default ContactForm;

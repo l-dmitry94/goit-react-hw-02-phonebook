@@ -1,8 +1,10 @@
+import PropTypes from 'prop-types';
 import { Component } from 'react';
 import { nanoid } from 'nanoid';
 import ContactForm from './ContactForm/ContactForm';
 import ContactList from './ContactList/ContactList';
 import Filter from './Filter/Filter';
+import { ContactListHeader, Container, PhonebookHeader, Section } from './App.styled';
 
 class App extends Component {
     state = {
@@ -16,10 +18,19 @@ class App extends Component {
     };
 
     formSubmitHandler = data => {
+        const { contacts } = this.state;
+
         const contact = {
             id: nanoid(),
             ...data,
         };
+
+        const inContacts = contacts.some(({ name }) => name === contact.name);
+
+        if (inContacts) {
+            alert(`${contact.name} is already in contacts.`);
+            return;
+        }
 
         this.setState(({ contacts }) => ({
             contacts: [contact, ...contacts],
@@ -33,28 +44,40 @@ class App extends Component {
     };
 
     getVisibleContacts = () => {
-      const { contacts, filter } = this.state;
-      const normilizedFilter = filter.toLowerCase();
-      return contacts.filter(contact =>
-        contact.name.toLowerCase().includes(normilizedFilter)
-    )
-    }
+        const { contacts, filter } = this.state;
+        
+        const normilizedFilter = filter.toLowerCase();
+        return contacts.filter(contact => contact.name.toLowerCase().includes(normilizedFilter));
+    };
+
+    deleteContact = contactId => {
+        this.setState(prevState => ({
+            contacts: prevState.contacts.filter(({ id }) => id !== contactId),
+        }));
+    };
 
     render() {
         const { filter } = this.state;
 
         const visibleContacts = this.getVisibleContacts();
         return (
-            <section className="phonebook">
-                <h1 className="phonebook__title">Phonebook</h1>
-                <ContactForm onSubmit={this.formSubmitHandler} />
+            <Section>
+                <Container>
+                    <PhonebookHeader>Phonebook</PhonebookHeader>
+                    <ContactForm onSubmit={this.formSubmitHandler} />
 
-                <h2 className="phonebook__list-title">Contacts</h2>
-                <Filter value={filter} onChange={this.handleChange} />
-                <ContactList contacts={visibleContacts} />
-            </section>
+                    <ContactListHeader>Contacts</ContactListHeader>
+                    <Filter value={filter} onChange={this.handleChange} />
+                    <ContactList contacts={visibleContacts} onDeleteContact={this.deleteContact} />
+                </Container>
+            </Section>
         );
     }
 }
+
+App.propTypes = {
+    filter: PropTypes.string,
+    visibleContacts: PropTypes.func,
+};
 
 export default App;

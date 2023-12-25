@@ -1,21 +1,27 @@
+import PropTypes from 'prop-types';
 import { nanoid } from 'nanoid';
+import { FormInput, FormLabel } from '../ContactForm/ContactForm.styled';
 
 const Filter = ({ value, onChange }) => {
     const filterId = nanoid();
 
     return (
-        <label htmlFor={filterId}>
+        <FormLabel htmlFor={filterId}>
             Find contacts by name
-            <input
-                className="phonebook__form-input"
+            <FormInput
                 id={filterId}
                 type="text"
                 name="filter"
                 value={value}
                 onChange={onChange}
             />
-        </label>
+        </FormLabel>
     );
+};
+
+Filter.propTypes = {
+    value: PropTypes.string.isRequired,
+    onChange: PropTypes.func.isRequired,
 };
 
 export default Filter;

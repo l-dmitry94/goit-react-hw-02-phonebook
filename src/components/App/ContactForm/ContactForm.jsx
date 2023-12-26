@@ -1,74 +1,62 @@
 import PropTypes from 'prop-types';
-import { Component } from 'react';
+import { Formik } from 'formik';
+import * as yup from 'yup';
 import { nanoid } from 'nanoid';
-import { Form, FormButton, FormInput, FormLabel } from './ContactForm.styled';
+import { FormButton, FormInputStyle, FormLabel, FormStyle, StyledErrorMessage } from './ContactForm.styled';
 
-class ContactForm extends Component {
-    state = {
-        name: '',
-        number: '',
+
+const nameId = nanoid();
+const numberId = nanoid();
+
+const schema = yup.object({
+    name: yup.string().max(12).required(),
+    number: yup.string().min(6).max(12).required(),
+});
+
+const initialValues = {
+    name: '',
+    number: '',
+};
+
+const ContactForm = ({ onSubmit }) => {
+    const handleSubmit = (values, { resetForm }) => {
+        onSubmit(values);
+        resetForm();
     };
 
-    handleChange = event => {
-        const { name } = event.currentTarget;
-
-        this.setState({
-            [name]: event.currentTarget.value,
-        });
-    };
-
-    handleSubmit = event => {
-        event.preventDefault();
-
-        this.props.onSubmit(this.state);
-
-        this.reset();
-    };
-
-    reset = () => {
-        this.setState({
-            name: '',
-            number: '',
-        });
-    };
-
-    render() {
-        const { name, number } = this.state;
-        const nameId = nanoid();
-        const numberId = nanoid();
-
-        return (
-            <Form onSubmit={this.handleSubmit}>
+    return (
+        <Formik initialValues={initialValues} validationSchema={schema} onSubmit={handleSubmit}>
+            <FormStyle autoComplete="on">
                 <FormLabel htmlFor={nameId}>
                     Name:
-                    <FormInput
+                    <FormInputStyle
                         type="text"
                         name="name"
                         id={nameId}
-                        value={name}
-                        onChange={this.handleChange}
+                        autoComplete="on"
                         required
                     />
+                    <StyledErrorMessage name="name" component="div"/>
                 </FormLabel>
                 <FormLabel htmlFor={numberId}>
                     Number:
-                    <FormInput
-                        type="tel"
+                    <FormInputStyle
+                        type="text"
                         name="number"
                         id={numberId}
-                        value={number}
-                        onChange={this.handleChange}
+                        autoComplete="on"
                         required
                     />
+                    <StyledErrorMessage name="number" component="div"/>
                 </FormLabel>
 
-                <FormButton type="submit">
-                    Add contact
-                </FormButton>
-            </Form>
-        );
-    }
-}
+                <FormButton type="submit">Add contact</FormButton>
+            </FormStyle>
+        </Formik>
+    );
+};
+
+export default ContactForm;
 
 ContactForm.propTypes = {
     name: PropTypes.string,
@@ -76,7 +64,4 @@ ContactForm.propTypes = {
     nameId: PropTypes.string,
     numberId: PropTypes.string,
     onSubmit: PropTypes.func.isRequired,
-    onChange: PropTypes.func,
 };
-
-export default ContactForm;

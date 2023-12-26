@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import { nanoid } from 'nanoid';
 import { FormInput, FormLabel } from '../ContactForm/ContactForm.styled';
 
+
 const Filter = ({ value, onChange }) => {
     const filterId = nanoid();
 

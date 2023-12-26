@@ -25,7 +25,7 @@ class App extends Component {
             ...data,
         };
 
-        const inContacts = contacts.some(({ name }) => name === contact.name);
+        const inContacts = contacts.some(({ name }) => name.toLowerCase() === contact.name.toLowerCase());
 
         if (inContacts) {
             alert(`${contact.name} is already in contacts.`);
